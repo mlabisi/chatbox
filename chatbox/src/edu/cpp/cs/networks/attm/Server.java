@@ -1,4 +1,4 @@
-package edu.cpp.cs.attm;
+package edu.cpp.cs.networks.attm;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,10 +11,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import static edu.cpp.cs.attm.ClientStatus.*;
-
 public class Server {
     private final int port;
+    private ServerSocket server;
     private Set<String> usernames;
     private Set<PrintWriter> clientStreams;
 
@@ -26,7 +25,7 @@ public class Server {
         this.clientStreams = new HashSet<>();
     }
 
-    private void startListening() {
+    public void startListening() {
         try(ServerSocket server = new ServerSocket(this.port)) {
             LOG.info("🔊 Server now listening on port " + this.port);
             while (true) {
@@ -60,7 +59,7 @@ public class Server {
 
         private ClientThread(Socket client) {
             this.client = client;
-            this.currentStatus = NOT_REGISTERED;
+            this.currentStatus = ClientStatus.NOT_REGISTERED;
             this.username = "";
             initializeIO();
         }
@@ -90,7 +89,7 @@ public class Server {
 
                 usernames.add(username);
                 clientStreams.add(outToClient);
-                broadcast(username + (currentStatus = LOGGED_IN).getMessage());
+                broadcast(username + (currentStatus = ClientStatus.LOGGED_IN).getMessage());
                 LOG.info("✅ " + username + " registered successfully");
             } catch (IOException e) {
                 LOG.severe("‼️ Could not communicate with client\n" + e.getMessage());
@@ -102,7 +101,7 @@ public class Server {
                 usernames.remove(username);
                 clientStreams.remove(outToClient);
                 client.close();
-                broadcast(username + (currentStatus = LOGGING_OUT).getMessage());
+                broadcast(username + (currentStatus = ClientStatus.LOGGING_OUT).getMessage());
                 LOG.info("✅ " + username + " disconnected successfully");
             } catch (IOException e) {
                 LOG.severe("‼️ Could not close client connection\n" + e.getMessage());

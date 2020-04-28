@@ -1,4 +1,4 @@
-package edu.cpp.cs.attm;
+package edu.cpp.cs.networks.attm;
 
 public enum ClientStatus {
     NOT_REGISTERED("Please enter your desired username"),
