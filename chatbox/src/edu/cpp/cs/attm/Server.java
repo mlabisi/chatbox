@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import static edu.cpp.cs.attm.Status.*;
+import static edu.cpp.cs.attm.ClientStatus.*;
 
 public class Server {
     private final int port;
@@ -28,7 +28,7 @@ public class Server {
 
     private void startListening() {
         try(ServerSocket server = new ServerSocket(this.port)) {
-            LOG.info("📞 Server now listening on port " + this.port);
+            LOG.info("🔊 Server now listening on port " + this.port);
             while (true) {
                 Socket client = server.accept();
                 LOG.info("➕ New client connection made");
@@ -53,7 +53,7 @@ public class Server {
 
     private class ClientThread extends Thread {
         private Socket client;
-        private Status currentStatus;
+        private ClientStatus currentStatus;
         private String username;
         private BufferedReader inFromClient;
         private PrintWriter outToClient;
