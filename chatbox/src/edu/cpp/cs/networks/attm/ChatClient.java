@@ -1,5 +1,7 @@
+package edu.cpp.cs.networks.attm;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.*;
 import javax.swing.*;
@@ -10,6 +12,9 @@ import java.util.Scanner;
 
 public class ChatClient {
     private Socket clientSocket;
+    private String hostName;
+    private int portNum;
+    private String status;
     private DataOutputStream dos;
     private BufferedReader br;
     private JFrame frame = new JFrame("Group Chat");
@@ -17,8 +22,9 @@ public class ChatClient {
     private String username;
     private Scanner sc = new Scanner(System.in);
 
-    public ChatClient(){
-        run();
+    public ChatClient(String host, int port){
+        this.hostName = host;
+        this.portNum=port;
         //openChatBox();
     }
     //get username and show chat
@@ -41,39 +47,54 @@ public class ChatClient {
     }
 
     //connect to the server
-    public void run(){
-        System.out.print("Enter username: ");
-        username = sc.next(); //get username
+    public void start(){
         try{
-            clientSocket = new Socket("localhost", 4321);
+            clientSocket = new Socket(hostName, portNum); //connect to server
             dos = new DataOutputStream(clientSocket.getOutputStream());
             br = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            dos.writeBytes(username); //how to differentiate between new login and message?
+            status = br.readLine(); //get ack from server
 
-            //wait for acknowledgment for username ie if(serverAck())
-
-            while(true){
-                dos.writeBytes(toSend()); //write messages to server
-                //use frame to show messages - connect BufferedReader for server input stream
-                //break if we get logging out ack
+            //user not registered yet
+            if(status.equals("Please enter your desired username")){
+                System.out.print("Welcome!\n" + status + ": ");
+                username = sc.next();
+                dos.writeBytes(username);
+                status = br.readLine();
+                System.out.print(status);
+            }
+            //while connected, get messages
+            while(status.equals(" Connected")){
+                status = chat(status, br, dos);
             }
         }
         catch(Exception e){
-            e.printStackTrace();
+           System.out.println("We couldn't connect to the server :(");
         }
     }
 
-    //get messages to send
-    private String toSend(){
-        String message;
-        //prompt user for message
-        System.out.print("/nNew message to group: ");
-        message = sc.next();
-        System.out.print(message);
-        return message;
+    //only chatting if connected -- return status
+    private String chat(String serverStatus, BufferedReader reader, DataOutputStream outStream) throws IOException{
+        String sendMsg, rcvMsg, status = serverStatus;
+            rcvMsg = reader.readLine(); //get input from server
+
+            //keep receiving and sending messages -- only if messages are still being sent
+            while((rcvMsg)!=null){
+                //if you disconnect then return disconnected status
+                if(rcvMsg.equals( " Disconnected")){
+                    status = " Disconnected";
+                }
+                System.out.print(rcvMsg);
+                rcvMsg = reader.readLine();
+            }
+            System.out.print("\nNew message: ");
+            sendMsg = sc.next();
+            outStream.writeBytes(sendMsg);
+            return status;
     }
+
     //main to test
     public static void main(String[] args){
-        new ChatClient();
+        ChatClient c1 = new ChatClient("localhost", 4321);
+        c1.start();
     }
 }
