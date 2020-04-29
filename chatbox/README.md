@@ -1,7 +1,4 @@
 # chatbox
-CS 3800 Group Project
-
-# chatbox
 A TCP Client-Server chat client.	
 
 ## Table of Contents
