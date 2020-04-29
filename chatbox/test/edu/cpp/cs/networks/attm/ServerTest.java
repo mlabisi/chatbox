@@ -10,7 +10,8 @@ import static org.junit.Assert.*;
 public class ServerTest {
     @Test
     public void testServerInstantiation() {
-
+        Server testServer = new Server(1234);
+        assertNotNull(testServer);
     }
 
     @Test
