@@ -6,4 +6,4 @@ cd build/
 jar -cvf Chatbox.jar *
 cd ..
 # run the server jar
-java -cp build.Chatbox.jar edu.cpp.cs.networks.attm.ChatServer
+java -cp build/Chatbox.jar edu.cpp.cs.networks.attm.ChatServer
