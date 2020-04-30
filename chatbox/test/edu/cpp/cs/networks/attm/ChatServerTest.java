@@ -7,11 +7,11 @@ import org.mockito.junit.MockitoJUnitRunner;
 import static org.junit.Assert.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ServerTest {
+public class ChatServerTest {
     @Test
     public void testServerInstantiation() {
-        Server testServer = new Server(1234);
-        assertNotNull(testServer);
+        ChatServer testChatServer = new ChatServer(1234);
+        assertNotNull(testChatServer);
     }
 
     @Test

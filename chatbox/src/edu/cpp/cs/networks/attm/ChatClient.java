@@ -1,34 +1,73 @@
 package edu.cpp.cs.networks.attm;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+
+import java.io.*;
 import java.net.*;
 import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
+/**
+ * This class represents an individual chat user.
+ */
 public class ChatClient {
     private Socket clientSocket;
     private String hostName;
     private int portNum;
-    private String status;
-    private DataOutputStream dos;
-    private BufferedReader br;
+
+    private boolean connected;
+    private DataOutputStream outToServer;
+    private DataInputStream inFromServer;
+
     private JFrame frame = new JFrame("Group Chat");
     private JPanel panel = new JPanel();
-    private String username;
     private Scanner sc = new Scanner(System.in);
 
-    public ChatClient(String host, int port){
+    private static final Logger LOG = Logger.getLogger(ChatClient.class.getName());
+
+    /**
+     * Creates an individual Chat client.
+     *
+     * @param host The hostname of the server
+     * @param port The server's port number
+     */
+    public ChatClient(String host, int port) {
         this.hostName = host;
-        this.portNum=port;
+        this.portNum = port;
+        initializeSocket();
+        initializeIO();
         //openChatBox();
     }
-    //get username and show chat
-    private void openChatBox(){
+
+    /**
+     * Called within the constructor, this function creates the TCP socket for the client.
+     */
+    private void initializeSocket() {
+        try {
+            this.clientSocket = new Socket(this.hostName, this.portNum);
+            this.connected = true;
+        } catch (IOException e) {
+            LOG.severe("‼️ Could not initialize client\n" + e.getMessage());
+        }
+    }
+
+    /**
+     * Called within the constructor, this function initializes the input and output streams.
+     */
+    private void initializeIO() {
+        try {
+            this.outToServer = new DataOutputStream(this.clientSocket.getOutputStream());
+            this.inFromServer = new DataInputStream(clientSocket.getInputStream());
+            LOG.info("✅ Client I/O streams initialized on client side");
+        } catch (IOException e) {
+            LOG.severe("‼️ Could not initialize client IO streams on client side\n" + e.getMessage());
+        }
+    }
+
+
+    private void openChatBox() {
         panel.setBorder(BorderFactory.createEmptyBorder(30, 30, 10, 30));
         //p.setLayout(new GridLayout(0,1));
         frame.add(panel, BorderLayout.CENTER);
@@ -41,59 +80,62 @@ public class ChatClient {
         field.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                username = field.getText();
             }
         });
     }
 
-    //connect to the server
-    public void start(){
-        try{
-            clientSocket = new Socket(hostName, portNum); //connect to server
-            dos = new DataOutputStream(clientSocket.getOutputStream());
-            br = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            status = br.readLine(); //get ack from server
-
-            //user not registered yet
-            if(status.equals("Please enter your desired username")){
-                System.out.print("Welcome!\n" + status + ": ");
-                username = sc.next();
-                dos.writeBytes(username);
-                status = br.readLine();
-                System.out.print(status);
-            }
-            //while connected, get messages
-            while(status.equals(" Connected")){
-                status = chat(status, br, dos);
-            }
-        }
-        catch(Exception e){
-           System.out.println("We couldn't connect to the server :(");
-        }
-    }
-
-    //only chatting if connected -- return status
-    private String chat(String serverStatus, BufferedReader reader, DataOutputStream outStream) throws IOException{
-        String sendMsg, rcvMsg, status = serverStatus;
-            rcvMsg = reader.readLine(); //get input from server
-
-            //keep receiving and sending messages -- only if messages are still being sent
-            while((rcvMsg)!=null){
-                //if you disconnect then return disconnected status
-                if(rcvMsg.equals( " Disconnected")){
-                    status = " Disconnected";
+    /**
+     * The client side is encapsulated in this method. Two threads are created--one for capturing user input and sending
+     * it to the server, and another for capturing messages from the server and displaying them.
+     */
+    public void start() {
+        Thread chat = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                LOG.info("‼️ Client chat thread started\n");
+                while (connected) {
+                    try {
+                        String message = sc.nextLine();
+                        if (message.equals(".")) {
+                            connected = false;
+                        }
+                        outToServer.writeUTF(message);
+                    } catch (IOException e) {
+                        LOG.severe("‼️ Client couldn't write line to server\n");
+                    }
                 }
-                System.out.print(rcvMsg);
-                rcvMsg = reader.readLine();
             }
-            System.out.print("\nNew message: ");
-            sendMsg = sc.next();
-            outStream.writeBytes(sendMsg);
-            return status;
+        });
+
+        Thread listen = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                LOG.info("‼️ Client listener thread started\n");
+                while (connected) {
+                    try {
+                        String line = inFromServer.readUTF();
+                        if (line.equals(ClientStatus.LOGGING_OUT.toString())) {
+                            connected = false;
+                            return;
+                        }
+                        System.out.println(line);
+                    } catch (IOException e) {
+                        LOG.severe("‼️ Client couldn't read line from server\n");
+                    }
+                }
+            }
+        });
+
+        chat.start();
+        listen.start();
     }
 
-    //main to test
-    public static void main(String[] args){
+    /**
+     * Create a chat client and start it. Make sure to run this after the server has been started.
+     *
+     * @param args Holds command line arguments
+     */
+    public static void main(String[] args) {
         ChatClient c1 = new ChatClient("localhost", 4321);
         c1.start();
     }

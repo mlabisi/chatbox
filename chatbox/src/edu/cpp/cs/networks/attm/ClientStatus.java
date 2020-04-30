@@ -1,17 +1,17 @@
 package edu.cpp.cs.networks.attm;
 
 public enum ClientStatus {
-    NOT_REGISTERED("Please enter your desired username"),
+    NOT_REGISTERED("Please enter your desired username: "),
     LOGGED_IN(" Connected."),
     LOGGING_OUT(" Disconnected.");
 
-    private String message;
+    private final String MESSAGE;
 
     ClientStatus(String message) {
-        this.message = message;
+        this.MESSAGE = message;
     }
 
-    public String getMessage() {
-        return message;
+    public String toString() {
+        return MESSAGE;
     }
 }
