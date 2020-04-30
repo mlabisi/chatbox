@@ -5,7 +5,7 @@ A TCP Client-Server chat client.
 - [Running the Chatbox](#running-the-server-)
   * [Step One - Get the Source Code](#step-one---get-the-source-code)
   * [Step Two - Install Dependencies](#step-two---install-dependencies)
-  * [Step Three - Run The Server Locally](#step-three---run-the-server-locally)
+  * [Step Three - Run The Code Locally](#step-three---run-the-code-locally)
 
 
 ## Running the Server 💻
@@ -22,6 +22,6 @@ Make sure you have the following libraries installed for this project
 * [JUnit v4.13](https://search.maven.org/search?q=g:junit%20AND%20a:junit)
 * [Mockito v3.3.3](https://search.maven.org/search?q=g:org.mockito%20AND%20a:mockito-core&core=gav)
 
-### Step Three - Run The Server Locally
+### Step Three - Run The Code Locally
 Now that you've installed the dependencies, you can run the server locally! To do so, go ahead run the `ChatServer::main` method.
-Once the server is running, run the server by running `ChatClient::main` method.  Check the console for program info and warnings.
+Once the server is running, run the client by running `ChatClient::main` method.  Check the console for program info and warnings.
