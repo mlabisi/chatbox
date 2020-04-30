@@ -136,14 +136,9 @@ public class ChatClient {
      * @param args Holds command line arguments
      */
     public static void main(String[] args) {
-        Scanner mySc = new Scanner(System.in);
-        String hostName;
-        System.out.println("type the hostname you want to use.");
-        System.out.println("try 'localhost', 'aws', or an IP address.");
-        System.out.print("hostname: ");
-        hostName = mySc.nextLine();
-        if(hostName.equals("aws")) hostName = "34.209.49.228";
-        mySc.close();
+        String hostName = "34.209.49.228";
+        // String hostName = "localhost";
+
         ChatClient c1 = new ChatClient(hostName, 4321);
         c1.start();
     }
