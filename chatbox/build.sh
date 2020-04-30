@@ -3,7 +3,7 @@
 javac -d build/ src/edu/cpp/cs/networks/attm/*.java
 cd build/
 # make the jar
-jar -cvf MyJar.jar *
+jar -cvf Chatbox.jar *
 cd ..
 # run the server jar
-java -cp MyJar.jar edu.cpp.cs.networks.attm.ChatServer
+java -cp build.Chatbox.jar edu.cpp.cs.networks.attm.ChatServer
