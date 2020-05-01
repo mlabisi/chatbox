@@ -161,11 +161,10 @@ public class ChatServer {
             try {
                 int attemptCt = 0;
                 do {
-                    outToClient.writeUTF(attemptCt++ == 1
+                    attemptCt++;
+                    outToClient.writeUTF(attemptCt == 1
                             ? currentStatus.toString()
                             : "Oops! That username has been taken. " + currentStatus.toString());
-
-                    outToClient.writeUTF(currentStatus.toString());
                     username = inFromClient.readUTF();
                 } while(users.containsKey(username));
 
