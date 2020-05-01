@@ -25,7 +25,7 @@ public class ChatUI {
      */
     public void enterUsername() throws InterruptedException {
 
-        panel.setBorder(BorderFactory.createEmptyBorder(50, 200, 100, 200));
+        panel.setBorder(BorderFactory.createEmptyBorder(50, 250, 100, 250));
         frame.add(panel, BorderLayout.CENTER);
         submit = new JButton("Submit");
         field = new JTextField(30);
