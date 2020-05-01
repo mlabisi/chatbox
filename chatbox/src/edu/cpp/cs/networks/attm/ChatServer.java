@@ -12,6 +12,7 @@ import java.util.logging.Logger;
  */
 public class ChatServer {
     private final int port;
+    private int cliCt;
     private Map<String, DataOutputStream> users;
 
     private static final Logger LOG = Logger.getLogger(ChatServer.class.getName());
@@ -23,7 +24,8 @@ public class ChatServer {
      */
     public ChatServer(int port) {
         this.port = port;
-        this.users = new HashMap<String, DataOutputStream>();
+        this.cliCt = 0;
+        this.users = new HashMap<>();
     }
 
     public void startListening() {
@@ -31,10 +33,9 @@ public class ChatServer {
             LOG.info("🔊 Server now listening on port " + this.port);
             while (true) {
                 Socket client = server.accept();
-                LOG.info("➕ New client connection made");
+                LOG.info("➕ Client connection #" + ++cliCt + " made");
 
-                ClientThread thread = new ClientThread(client);
-                thread.run();
+                new ClientThread(client).start();
             }
         } catch (IOException e) {
             LOG.severe("‼️ Could not start client thread\n" + e.toString());
@@ -113,7 +114,7 @@ public class ChatServer {
     /**
      * This inner class manages the server's interaction with an individual client.
      */
-    private class ClientThread implements Runnable {
+    private class ClientThread extends Thread {
         private Socket client;
         private ClientStatus currentStatus;
         private String username;
@@ -133,9 +134,8 @@ public class ChatServer {
         }
 
         /**
-         * Starts the thread.
+         * Runs the thread.
          */
-        @Override
         public void run() {
             register();
             runChatLoop();
@@ -157,13 +157,13 @@ public class ChatServer {
         /**
          * Handles the creation of the username and stores the user representation in memory
          */
-        private void register() {
+        synchronized private void register() {
             try {
-                outToClient.writeUTF(currentStatus.toString());
-                username = inFromClient.readUTF();
-                while (users.containsKey(username) || username == null) {
-                    register();
-                }
+                do {
+                    outToClient.writeUTF(currentStatus.toString());
+                    username = inFromClient.readUTF();
+                } while(users.containsKey(username));
+
                 users.put(username, outToClient);
                 directMessage(username, "Welcome " + username + "!", false);
                 shadowBroadcast(username + (currentStatus = ClientStatus.LOGGED_IN).toString(), username);
@@ -176,7 +176,7 @@ public class ChatServer {
         /**
          * Handles the disconnection of the user and removes them from in memory storage
          */
-        private void logout() {
+        synchronized private void logout() {
             try {
                 inFromClient.close();
                 outToClient.close();
@@ -196,7 +196,7 @@ public class ChatServer {
             try {
                 String message;
                 while (!(message = inFromClient.readUTF()).equals(".")) {
-                    broadcast(message);
+                    broadcast(username + ": " + message);
                     LOG.info("✅ " + username + "'s message broadcast successful");
                     LOG.info("📢 " + message);
                 }

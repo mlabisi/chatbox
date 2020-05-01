@@ -137,7 +137,7 @@ public class ChatClient {
      */
     public static void main(String[] args) {
         String hostName = "34.209.49.228";
-        // String hostName = "localhost";
+//         String hostName = "localhost";
 
         ChatClient c1 = new ChatClient(hostName, 4321);
         c1.start();
