@@ -22,6 +22,9 @@ public class ChatClient {
     ChatUI window = new ChatUI();
 
     private String message="";
+    private String username="";
+    private boolean userNameVerified=false;
+
     private static final Logger LOG = Logger.getLogger(ChatClient.class.getName());
 
     /**
@@ -30,14 +33,14 @@ public class ChatClient {
      * @param host The hostname of the server
      * @param port The server's port number
      */
-    public ChatClient(String host, int port) {
+    public ChatClient(String host, int port) throws InterruptedException {
         this.hostName = host;
         this.portNum = port;
         initializeSocket();
         initializeIO();
         window.openMessageDialog();
         try {
-            window.getButton().addActionListener(new ActionListener() {
+            window.getSendButton().addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent a) {
                     message = window.getTextField().getText();
@@ -47,6 +50,15 @@ public class ChatClient {
         }catch(NullPointerException e){
 
         }
+        window.enterUsername();
+        window.getSubmitButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                message = window.field.getText();
+                window.showUsernameScreen(true);
+            }
+        });
+
     }
 
     /**
@@ -74,7 +86,6 @@ public class ChatClient {
         }
     }
 
-
     /**
      * The client side is encapsulated in this method. Two threads are created--one for capturing user input and sending
      * it to the server, and another for capturing messages from the server and displaying them.
@@ -86,11 +97,12 @@ public class ChatClient {
                 LOG.info("‼️ Client chat thread started\n");
                 while (connected) {
                     try {
-                        if(window.userNameEntered==false) {
-                            message = window.enterUsername();
+                        if(userNameVerified==false){
+                            window.showUsernameScreen(true);
+                        }else if(userNameVerified==true) {
+                            window.showUsernameScreen(false);
+                            window.showMessages(true);
                         }
-
-                        window.showMessages(true);
 
                         if(message.length()>0) {
                             if (message.equals(".")) {
@@ -101,7 +113,7 @@ public class ChatClient {
 
                         }
                         message="";
-                    } catch (IOException | InterruptedException e) {
+                    } catch (IOException e) {
                         LOG.severe("‼️ Client couldn't write line to server\n");
                     }
                 }
@@ -115,11 +127,12 @@ public class ChatClient {
                 while (connected) {
                     try {
                         String line = inFromServer.readUTF();
-                        //not working at the moment
-                        if(line.equals("Oops! That username has been taken. ")){
+                        if(line.startsWith("Oops! That username has been taken.")){
                             window.changeLabel(line);
-                            window.showUsernameScreen();
-                        }else if(!line.equals("Please enter your desired username: ")) {
+                            window.showUsernameScreen(true);
+                        }else if(!line.contains("Please enter your desired username: ")) {
+                            userNameVerified=true;
+                            window.showMessages(true);
                             window.writeMessage(line);
                         }
                         if (line.equals(ClientStatus.LOGGING_OUT.toString())) {
@@ -144,7 +157,7 @@ public class ChatClient {
      *
      * @param args Holds command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         String hostName = "34.209.49.228";
 
         ChatClient c1 = new ChatClient("127.0.0.1", 4321);

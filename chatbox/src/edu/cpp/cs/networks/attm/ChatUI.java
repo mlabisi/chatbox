@@ -2,15 +2,13 @@ package edu.cpp.cs.networks.attm;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class ChatUI {
     public JFrame frame = new JFrame("Group Chat");
     private JPanel panel = new JPanel();
     private JFrame frame1 = new JFrame("Group Chat");
     private JPanel panel1 = new JPanel();
-    private JTextField field;
+    public JTextField field;
     private JTextArea seeChat= new JTextArea("Welcome ");
     private JTextField typeMessage;
     private JButton submit;
@@ -25,7 +23,7 @@ public class ChatUI {
      * Opens the username prompt
      * NEEDS USERNAME CHECK
      */
-    public String enterUsername() throws InterruptedException {
+    public void enterUsername() throws InterruptedException {
 
         panel.setBorder(BorderFactory.createEmptyBorder(50, 200, 100, 200));
         frame.add(panel, BorderLayout.CENTER);
@@ -37,18 +35,7 @@ public class ChatUI {
         panel.add(field);
         panel.add(submit);
         frame.add(panel);
-        submit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                username = field.getText();
-                userNameEntered=true;
-                frame.setVisible(false);
-            }
-        });
-        while(userNameEntered==false){
-            Thread.sleep(200);
-        }
-        return username;
+
     }
 
     /**
@@ -74,8 +61,11 @@ public class ChatUI {
         openedChat=true;
 
     }
-    public JButton getButton() {
+    public JButton getSendButton() {
         return send;
+    }
+    public JButton getSubmitButton() {
+        return submit;
     }
     public void changeLabel(String text){
         label.setText(text);
@@ -84,8 +74,8 @@ public class ChatUI {
         frame1.setVisible(show);
     }
 
-    public void showUsernameScreen(){
-        frame.setVisible(true);
+    public void showUsernameScreen(Boolean show){
+        frame.setVisible(show);
     }
 
     public JTextField getTextField(){
