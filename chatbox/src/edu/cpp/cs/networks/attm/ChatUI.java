@@ -52,7 +52,7 @@ public class ChatUI {
         messageFrame.add(messagePanel, BorderLayout.CENTER);
         messageFrame.setResizable(false);
         send = new JButton("Send");
-        seeChat=new JTextArea(16,50);
+        seeChat=new JTextArea(16,48);
         scroll = new JScrollPane (seeChat);
         typeMessage= new JTextField(50);
         seeChat.setEditable(false);
