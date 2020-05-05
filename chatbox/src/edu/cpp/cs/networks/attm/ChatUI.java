@@ -5,6 +5,7 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
 import java.awt.*;
+import java.awt.event.*;
 
 public class ChatUI {
     public JFrame usernameFrame;
@@ -79,6 +80,12 @@ public class ChatUI {
         c.gridy = 0;
         c.gridwidth = 3;
         messagePanel.add(scroll, c);
+
+        scroll.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {  
+            public void adjustmentValueChanged(AdjustmentEvent e) {  
+                e.getAdjustable().setValue(e.getAdjustable().getMaximum());  
+            }
+        });
 
         c = new GridBagConstraints();
         c.gridy = 1;
@@ -162,7 +169,7 @@ public class ChatUI {
     public void close() {
 
     }
-    
+
     private static class RoundedBorder implements Border {
 
         private int radius;
