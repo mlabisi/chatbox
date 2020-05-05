@@ -79,6 +79,7 @@ public class ChatServer {
                     try {
                         entry.getValue().writeUTF(message + "\n" + new Timestamp(System.currentTimeMillis()));
                     } catch (IOException e) {
+
                         LOG.severe("‼️ Could not broadcast to clients\n" + e.toString());
                     }
                 });
@@ -207,7 +208,7 @@ public class ChatServer {
                 directMessage(username, ClientStatus.LOGGING_OUT.toString(), false);
                 logout();
             } catch (IOException e) {
-                LOG.severe("‼️ Could not broadcast client message\n" + e.toString());
+                logout(); //user closes window
             }
         }
     }
