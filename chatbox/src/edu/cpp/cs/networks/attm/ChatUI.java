@@ -6,6 +6,8 @@ import javax.swing.border.EmptyBorder;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 public class ChatUI {
     public JFrame usernameFrame;
@@ -150,13 +152,24 @@ public class ChatUI {
     public void writeMessage(String mssg, MessageTypes type) {
 
         // messagesHTML += "<span class=\"message\">" + mssg + "</span>";
-        JPanel box = new JPanel();
+        Box box = Box.createVerticalBox();
         box.setOpaque(false);
         box.setBorder(new RoundedBorder(10));
-        JLabel label = new JLabel(mssg);
-        label.setHorizontalAlignment(SwingConstants.LEFT);
-        box.add(label);
-        label.setText(mssg);
+        for(String line: mssg.split("\n")) {
+            JLabel label = new JLabel(mssg);
+            label.setHorizontalAlignment(SwingConstants.LEFT);
+            box.add(label);
+            try { 
+                Timestamp time = Timestamp.valueOf(line);
+                String t = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a").format(time);
+                label.setText(t);
+                label.setForeground(Color.gray);
+            } catch(Exception e) {
+                
+                label.setText(line);
+            }
+
+        }
 
         box.setMaximumSize(box.getPreferredSize());
         box.setAlignmentX(Component.LEFT_ALIGNMENT);
