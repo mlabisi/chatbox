@@ -111,4 +111,8 @@ public class ChatUI {
         seeChat.append(mssg+"\n");
     }
 
+    public void close() {
+
+    }
+
 }

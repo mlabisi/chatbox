@@ -185,7 +185,7 @@ public class ChatServer {
                 inFromClient.close();
                 outToClient.close();
                 client.close();
-                users.remove(username);
+                users.remove(username, users.get(username));
                 shadowBroadcast(username + (currentStatus = ClientStatus.LOGGING_OUT).toString(), username);
                 LOG.info("✅ " + username + " disconnected successfully");
             } catch (IOException e) {
