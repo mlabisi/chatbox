@@ -45,7 +45,7 @@ public class ChatClient {
         this.message = "";
         this.userNameVerified = false;
 
-        window.getSubmitButton().addActionListener(new ActionListener() {
+        ActionListener nameListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 message = window.field.getText();
@@ -55,13 +55,16 @@ public class ChatClient {
                     LOG.severe("‼️ Couldn't get username from client\n");
                 }
             }
-        });
+        };
+        window.getSubmitButton().addActionListener(nameListener);
+        window.field.addActionListener(nameListener);
 
-        window.getSendButton().addActionListener(new ActionListener() {
+        ActionListener sendListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent a) {
                 message = window.getTextField().getText();
                 window.getTextField().setText("");
+                window.getTextField().requestFocusInWindow();
                 try {
                     if (message.length() > 0) {
                         if (message.equals(".")) {
@@ -73,7 +76,10 @@ public class ChatClient {
                     LOG.severe("‼️ Client couldn't send message to server\n");
                 }
             }
-        });
+        };
+        window.getSendButton().addActionListener(sendListener);
+        window.getTextField().addActionListener(sendListener);
+
     }
 
     /**
@@ -129,13 +135,7 @@ public class ChatClient {
                             window.showUsernameScreen(false);
                             window.writeMessage(line, MessageTypes.WELCOME);
                         } else {
-                            try {
-                                Timestamp.valueOf(line);
-                                System.out.println("parsed timestamp! "+line);
-                                window.writeMessage(line, MessageTypes.TIMESTAMP);
-                            } catch(IllegalArgumentException e) {
-                                window.writeMessage(line, MessageTypes.MESSAGE);
-                            }
+                            window.writeMessage(line, MessageTypes.MESSAGE);
                         }
                     } catch (IOException e) {
                         LOG.severe("‼️ Client couldn't read line from server\n");
