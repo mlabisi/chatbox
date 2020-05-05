@@ -3,6 +3,7 @@ package edu.cpp.cs.networks.attm;
 
 import java.io.*;
 import java.net.*;
+import java.sql.Timestamp;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.logging.Logger;
@@ -126,9 +127,15 @@ public class ChatClient {
                         } else if (line.startsWith("Welcome")) {
                             window.showMessages(true);
                             window.showUsernameScreen(false);
-                            window.writeMessage(line);
+                            window.writeMessage(line, MessageTypes.WELCOME);
                         } else {
-                            window.writeMessage(line);
+                            try {
+                                Timestamp.valueOf(line);
+                                System.out.println("parsed timestamp! "+line);
+                                window.writeMessage(line, MessageTypes.TIMESTAMP);
+                            } catch(IllegalArgumentException e) {
+                                window.writeMessage(line, MessageTypes.MESSAGE);
+                            }
                         }
                     } catch (IOException e) {
                         LOG.severe("‼️ Client couldn't read line from server\n");
