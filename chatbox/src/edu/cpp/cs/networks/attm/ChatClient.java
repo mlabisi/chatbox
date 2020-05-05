@@ -117,6 +117,8 @@ public class ChatClient {
                         if (line.equals(ClientStatus.LOGGING_OUT.toString())) {
                             connected = false;
                             window.showMessages(false);
+                            System.exit(0);
+
                         } else if (!userNameVerified) {
                             window.showMessages(false);
                             window.showUsernameScreen(true);
@@ -144,8 +146,8 @@ public class ChatClient {
      * @param args Holds command line arguments
      */
     public static void main(String[] args) throws InterruptedException {
-//        String hostName = "34.209.49.228";
-        String hostName = "localhost";
+//        String hostName = "34.209.49.228"; // aws server
+        String hostName = "localhost"; // local server
 
         ChatClient c1 = new ChatClient(hostName, 4321);
         c1.start();
