@@ -1,12 +1,10 @@
 package edu.cpp.cs.networks.attm;
 
+
 import java.io.*;
 import java.net.*;
-import javax.swing.*;
-import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Scanner;
 import java.util.logging.Logger;
 
 /**
@@ -21,9 +19,11 @@ public class ChatClient {
     private DataOutputStream outToServer;
     private DataInputStream inFromServer;
 
-    private JFrame frame = new JFrame("Group Chat");
-    private JPanel panel = new JPanel();
-    private Scanner sc = new Scanner(System.in);
+    ChatUI window = new ChatUI();
+
+    private String message="";
+    private String username="";
+    private boolean userNameVerified=false;
 
     private static final Logger LOG = Logger.getLogger(ChatClient.class.getName());
 
@@ -33,12 +33,32 @@ public class ChatClient {
      * @param host The hostname of the server
      * @param port The server's port number
      */
-    public ChatClient(String host, int port) {
+    public ChatClient(String host, int port) throws InterruptedException {
         this.hostName = host;
         this.portNum = port;
         initializeSocket();
         initializeIO();
-        //openChatBox();
+        window.openMessageDialog();
+        try {
+            window.getSendButton().addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent a) {
+                    message = window.getTextField().getText();
+                    window.getTextField().setText("");
+                }
+            });
+        }catch(NullPointerException e){
+
+        }
+        window.enterUsername();
+        window.getSubmitButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                message = window.field.getText();
+                window.showUsernameScreen(true);
+            }
+        });
+
     }
 
     /**
@@ -66,24 +86,6 @@ public class ChatClient {
         }
     }
 
-
-    private void openChatBox() {
-        panel.setBorder(BorderFactory.createEmptyBorder(30, 30, 10, 30));
-        //p.setLayout(new GridLayout(0,1));
-        frame.add(panel, BorderLayout.CENTER);
-        JTextField field = new JTextField(30);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //end program = close window
-        frame.pack();
-        frame.setVisible(true);
-        panel.add(field);
-        frame.add(panel);
-        field.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-            }
-        });
-    }
-
     /**
      * The client side is encapsulated in this method. Two threads are created--one for capturing user input and sending
      * it to the server, and another for capturing messages from the server and displaying them.
@@ -95,11 +97,22 @@ public class ChatClient {
                 LOG.info("‼️ Client chat thread started\n");
                 while (connected) {
                     try {
-                        String message = sc.nextLine();
-                        if (message.equals(".")) {
-                            connected = false;
+                        if(userNameVerified==false){
+                            window.showUsernameScreen(true);
+                        }else if(userNameVerified==true) {
+                            window.showUsernameScreen(false);
+                            window.showMessages(true);
                         }
-                        outToServer.writeUTF(message);
+
+                        if(message.length()>0) {
+                            if (message.equals(".")) {
+                                connected = false;
+                            }
+                            System.out.println("'"+message+"'");
+                            outToServer.writeUTF(message);
+
+                        }
+                        message="";
                     } catch (IOException e) {
                         LOG.severe("‼️ Client couldn't write line to server\n");
                     }
@@ -114,8 +127,17 @@ public class ChatClient {
                 while (connected) {
                     try {
                         String line = inFromServer.readUTF();
+                        if(line.startsWith("Oops! That username has been taken.")){
+                            window.changeLabel(line);
+                            window.showUsernameScreen(true);
+                        }else if(!line.contains("Please enter your desired username: ")) {
+                            userNameVerified=true;
+                            window.showMessages(true);
+                            window.writeMessage(line);
+                        }
                         if (line.equals(ClientStatus.LOGGING_OUT.toString())) {
                             connected = false;
+                            window.showMessages(false);
                             return;
                         }
                         System.out.println(line);
@@ -135,11 +157,11 @@ public class ChatClient {
      *
      * @param args Holds command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         String hostName = "34.209.49.228";
-//         String hostName = "localhost";
 
-        ChatClient c1 = new ChatClient(hostName, 4321);
+        ChatClient c1 = new ChatClient("127.0.0.1", 4321);
         c1.start();
     }
 }
+
