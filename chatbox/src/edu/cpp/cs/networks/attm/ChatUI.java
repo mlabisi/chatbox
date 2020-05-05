@@ -4,59 +4,63 @@ import javax.swing.*;
 import java.awt.*;
 
 public class ChatUI {
-    public JFrame frame = new JFrame("Group Chat");
-    private JPanel panel = new JPanel();
-    private JFrame frame1 = new JFrame("Group Chat");
-    private JPanel panel1 = new JPanel();
+    public JFrame usernameFrame;
+    private JPanel usernamePanel;
+    private JFrame messageFrame;
+    private JPanel messagePanel;
     public JTextField field;
-    private JTextArea seeChat= new JTextArea("Welcome ");
+    private JTextArea seeChat;
     private JTextField typeMessage;
     private JButton submit;
     private JButton send;
-    private String username;
-    public Boolean userNameEntered=false;
-    private String message="";
-    public boolean openedChat=false;
-    public JLabel label= new JLabel("Please enter your desired username");
+    public boolean openedChat;
+    public JLabel label;
 
-    /**
-     * Opens the username prompt
-     * NEEDS USERNAME CHECK
-     */
-    public void enterUsername() throws InterruptedException {
-
-        panel.setBorder(BorderFactory.createEmptyBorder(50, 200, 100, 200));
-        frame.add(panel, BorderLayout.CENTER);
-        submit = new JButton("Submit");
-        field = new JTextField(30);
-        frame.pack();
-        frame.setVisible(true);
-        panel.add(label);
-        panel.add(field);
-        panel.add(submit);
-        frame.add(panel);
-
+    public ChatUI() {
+        usernameFrame = new JFrame("Group Chat");
+        usernamePanel = new JPanel();
+        messageFrame = new JFrame("Group Chat");
+        messagePanel = new JPanel();
+        seeChat = new JTextArea("Welcome ");
+        openedChat = false;
+        label= new JLabel("Please enter your desired username");
     }
 
     /**
-     * Open message dialog
+     * Initialize the username prompt
      */
-    public void openMessageDialog(){
-        panel1.setBorder(BorderFactory.createEmptyBorder(50, 300, 350, 300));//100, 300, 300, 300));
-        frame1.add(panel1, BorderLayout.CENTER);
+    public void initUsernameDialog() {
+        usernamePanel.setBorder(BorderFactory.createEmptyBorder(50, 250, 100, 250));
+        usernameFrame.add(usernamePanel, BorderLayout.CENTER);
+        submit = new JButton("Submit");
+        field = new JTextField(30);
+        usernameFrame.pack();
+        usernameFrame.setVisible(false);
+        usernamePanel.add(label);
+        usernamePanel.add(field);
+        usernamePanel.add(submit);
+        usernameFrame.add(usernamePanel);
+    }
+
+    /**
+     * Initialize the message dialog
+     */
+    public void initMessageDialog(){
+        messagePanel.setBorder(BorderFactory.createEmptyBorder(50, 300, 350, 300));//100, 300, 300, 300));
+        messageFrame.add(messagePanel, BorderLayout.CENTER);
         send = new JButton("Send");
         seeChat=new JTextArea(16,50);
         typeMessage= new JTextField(50);
         seeChat.setEditable(false);
         typeMessage.setEditable(true);
-        frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame1.setSize(400,300);
-        frame1.pack();
-        frame1.setVisible(false);
-        panel1.add(seeChat);
-        panel1.add(typeMessage);
-        panel1.add(send);
-        frame1.add(panel1);
+        messageFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        messageFrame.setSize(400,300);
+        messageFrame.pack();
+        messageFrame.setVisible(false);
+        messagePanel.add(seeChat);
+        messagePanel.add(typeMessage);
+        messagePanel.add(send);
+        messageFrame.add(messagePanel);
 
         openedChat=true;
 
@@ -70,22 +74,31 @@ public class ChatUI {
     public void changeLabel(String text){
         label.setText(text);
     }
+
+    /**
+     * Display the Messages Dialog
+     * @param show
+     */
     public void showMessages(Boolean show){
-        frame1.setVisible(show);
+
+        messageFrame.setVisible(show);
     }
 
+    /**
+     * Display the Username Dialog
+     * @param show
+     */
     public void showUsernameScreen(Boolean show){
-        frame.setVisible(show);
+
+        usernameFrame.setVisible(show);
     }
 
     public JTextField getTextField(){
         return typeMessage;
     }
 
-
     /**
      * write message to frame
-     * returns message to be sent
      */
     public void writeMessage(String mssg){
 
