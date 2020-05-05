@@ -32,7 +32,7 @@ public class ChatClient {
      * @param host The hostname of the server
      * @param port The server's port number
      */
-    public ChatClient(String host, int port) throws InterruptedException {
+    public ChatClient(String host, int port) {
         this.hostName = host;
         this.portNum = port;
         initializeSocket();
@@ -145,7 +145,7 @@ public class ChatClient {
      *
      * @param args Holds command line arguments
      */
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
 //        String hostName = "34.209.49.228"; // aws server
         String hostName = "localhost"; // local server
 
