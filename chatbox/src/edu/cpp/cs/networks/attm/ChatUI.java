@@ -154,23 +154,34 @@ public class ChatUI {
         // messagesHTML += "<span class=\"message\">" + mssg + "</span>";
         Box box = Box.createVerticalBox();
         box.setOpaque(false);
-        box.setBorder(new RoundedBorder(10));
-        for(String line: mssg.split("\n")) {
+        box.setBorder(new RoundedBorder(10, new Color(247,247,247)));
+
+
+        if(type == MessageTypes.WELCOME) {
             JLabel label = new JLabel(mssg);
+            label.setForeground(new Color(91,95,203));
             label.setHorizontalAlignment(SwingConstants.LEFT);
+
             box.add(label);
-            try { 
-                Timestamp time = Timestamp.valueOf(line);
-                String t = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a").format(time);
-                label.setText(t);
-                label.setForeground(Color.gray);
-            } catch(Exception e) {
+        } else {
+
+            
+            for(String line: mssg.split("\n")) {
+                JLabel label = new JLabel();
+                label.setHorizontalAlignment(SwingConstants.LEFT);
+                box.add(label);
+                try { 
+                    Timestamp time = Timestamp.valueOf(line);
+                    String t = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a").format(time);
+                    label.setText(t);
+                    label.setForeground(Color.gray);
+                } catch(Exception e) {
+                    label.setText(line);
+                }
                 
-                label.setText(line);
             }
-
         }
-
+            
         box.setMaximumSize(box.getPreferredSize());
         box.setAlignmentX(Component.LEFT_ALIGNMENT);
 
@@ -186,9 +197,11 @@ public class ChatUI {
     private static class RoundedBorder implements Border {
 
         private int radius;
+        private Color color;
 
-        RoundedBorder(int radius) {
+        RoundedBorder(int radius, Color color) {
             this.radius = radius;
+            this.color = color;
         }
 
         @Override
@@ -203,7 +216,7 @@ public class ChatUI {
 
         @Override
         public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-            g.setColor(new Color(245, 245, 245));
+            g.setColor(this.color);
             g.fillRoundRect(x, y, width, height, radius * 2, radius * 2);
             // g.clearRect(+radius, y+radius, width - (radius*2), height - (radius*2));
         }
