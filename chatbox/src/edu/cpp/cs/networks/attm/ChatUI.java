@@ -10,6 +10,7 @@ public class ChatUI {
     private JPanel messagePanel;
     public JTextField field;
     private JTextArea seeChat;
+    JScrollPane scroll;
     private JTextField typeMessage;
     private JButton submit;
     private JButton send;
@@ -36,6 +37,7 @@ public class ChatUI {
         field = new JTextField(30);
         usernameFrame.pack();
         usernameFrame.setVisible(false);
+        usernameFrame.setResizable(false);
         usernamePanel.add(label);
         usernamePanel.add(field);
         usernamePanel.add(submit);
@@ -48,8 +50,10 @@ public class ChatUI {
     public void initMessageDialog(){
         messagePanel.setBorder(BorderFactory.createEmptyBorder(50, 300, 350, 300));//100, 300, 300, 300));
         messageFrame.add(messagePanel, BorderLayout.CENTER);
+        messageFrame.setResizable(false);
         send = new JButton("Send");
         seeChat=new JTextArea(16,50);
+        scroll = new JScrollPane (seeChat);
         typeMessage= new JTextField(50);
         seeChat.setEditable(false);
         typeMessage.setEditable(true);
@@ -57,7 +61,9 @@ public class ChatUI {
         messageFrame.setSize(400,300);
         messageFrame.pack();
         messageFrame.setVisible(false);
-        messagePanel.add(seeChat);
+        // messagePanel.add(seeChat);
+        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        messagePanel.add(scroll);
         messagePanel.add(typeMessage);
         messagePanel.add(send);
         messageFrame.add(messagePanel);
