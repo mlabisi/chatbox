@@ -159,7 +159,7 @@ public class ChatUI {
 
         if(type == MessageTypes.WELCOME) {
             JLabel label = new JLabel(mssg);
-            label.setForeground(new Color(91,95,203));
+            label.setForeground(getUniqueColor(mssg.substring(8, mssg.length()-1)));
             label.setHorizontalAlignment(SwingConstants.LEFT);
 
             box.add(label);
@@ -177,6 +177,8 @@ public class ChatUI {
                     label.setForeground(Color.gray);
                 } catch(Exception e) {
                     label.setText(line);
+                    String username = line.substring(0, line.indexOf(":"));
+                    label.setForeground(getUniqueColor(username));
                 }
                 
             }
@@ -192,6 +194,10 @@ public class ChatUI {
 
     public void close() {
 
+    }
+    public Color getUniqueColor(String name) {
+        float hue = (float)(name.hashCode() % 360) / 360.0f;
+        return new Color(Color.HSBtoRGB(hue, .75f, .55f));
     }
 
     private static class RoundedBorder implements Border {
