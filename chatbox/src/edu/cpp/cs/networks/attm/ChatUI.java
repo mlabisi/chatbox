@@ -1,13 +1,8 @@
 package edu.cpp.cs.networks.attm;
 
 import javax.swing.*;
-import javax.swing.border.AbstractBorder;
 import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledDocument;
 
 import java.awt.*;
 
@@ -60,18 +55,11 @@ public class ChatUI {
         messageFrame.add(messagePanel, BorderLayout.CENTER);
         // messageFrame.setResizable(false);
         send = new JButton("Send");
-        
-        // seeChat = new JTextPane();
-        // seeChat.setContentType("text/html");
-        // seeChat.setText(
-        //     "<html><head><style>"
-        //     + ".message{padding: 10px; background-color: #eee;}"
-        //     +"</style></head><body></body></html>"
-        // );
+
         chat = Box.createVerticalBox();
         // chat.setLayout(new BoxLayout(chat, BoxLayout.Y_AXIS));
         chat.setBackground(Color.white);
-        chat.setBorder(new EmptyBorder(10,10,0,10));
+        chat.setBorder(new EmptyBorder(10, 10, 0, 10));
         scroll = new JScrollPane(chat);
         typeMessage = new JTextField();
         // seeChat.setEditable(false);
@@ -162,39 +150,27 @@ public class ChatUI {
         label.setHorizontalAlignment(SwingConstants.LEFT);
         box.add(label);
         label.setText(mssg);
-        // label.setOpaque(true);
 
-        // label.setBackground(new Color(230,230,230));
-        box.setMaximumSize( box.getPreferredSize() );
+        box.setMaximumSize(box.getPreferredSize());
         box.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         chat.add(box);
         chat.add(Box.createVerticalStrut(10));
         chat.revalidate();
-        
-        // updateChat();
     }
-    // public void updateChat() {
-    //     seeChat.setText(
-    //         "<html><head><style>"
-    //         + ".message{padding: 10px; background-color: #eee;}"
-    //         +"</style></head><body>"
-    //         +messagesHTML + 
-    //         "</body></html>"
-    //     );
-    // }
 
     public void close() {
 
     }
-        
+    
     private static class RoundedBorder implements Border {
-        
+
         private int radius;
-        
+
         RoundedBorder(int radius) {
             this.radius = radius;
         }
+
         @Override
         public Insets getBorderInsets(Component c) {
             return new Insets(this.radius, this.radius, this.radius, this.radius);
@@ -207,8 +183,8 @@ public class ChatUI {
 
         @Override
         public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-            g.setColor(new Color(245,245,245));
-            g.fillRoundRect(x,y,width,height,radius*2,radius*2);
+            g.setColor(new Color(245, 245, 245));
+            g.fillRoundRect(x, y, width, height, radius * 2, radius * 2);
             // g.clearRect(+radius, y+radius, width - (radius*2), height - (radius*2));
         }
     }
