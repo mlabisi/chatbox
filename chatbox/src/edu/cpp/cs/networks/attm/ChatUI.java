@@ -159,7 +159,12 @@ public class ChatUI {
 
         if(type == MessageTypes.WELCOME) {
             JLabel label = new JLabel(mssg);
-            label.setForeground(getUniqueColor(mssg.substring(8, mssg.length()-1)));
+            try {
+
+                label.setForeground(getUniqueColor(mssg.substring(8, mssg.length()-1)));
+            } catch(IndexOutOfBoundsException e) {
+                System.err.println(e);
+            }
             label.setHorizontalAlignment(SwingConstants.LEFT);
 
             box.add(label);
@@ -177,8 +182,13 @@ public class ChatUI {
                     label.setForeground(Color.gray);
                 } catch(Exception e) {
                     label.setText(line);
-                    String username = line.substring(0, line.indexOf(":"));
-                    label.setForeground(getUniqueColor(username));
+                    try {
+
+                        String username = line.substring(0, line.indexOf(":"));
+                        label.setForeground(getUniqueColor(username));
+                    } catch( IndexOutOfBoundsException ooe) {
+                        System.out.println(ooe);
+                    }
                 }
                 
             }
