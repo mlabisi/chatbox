@@ -170,28 +170,32 @@ public class ChatUI {
             box.add(label);
         } else {
 
-            
-            for(String line: mssg.split("\n")) {
-                JLabel label = new JLabel();
-                label.setHorizontalAlignment(SwingConstants.LEFT);
-                box.add(label);
-                try { 
-                    Timestamp time = Timestamp.valueOf(line);
-                    String t = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a").format(time);
-                    label.setText(t);
-                    label.setForeground(Color.gray);
-                } catch(Exception e) {
-                    label.setText(line);
+            if(mssg.length()>0){
+                for(String line: mssg.split("\n")) {
+                    JLabel label = new JLabel();
+                    label.setHorizontalAlignment(SwingConstants.LEFT);
+                    box.add(label);
                     try {
+                        Timestamp time = Timestamp.valueOf(line);
+                        String t = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a").format(time);
+                        label.setText(t);
+                        label.setForeground(Color.gray);
+                    } catch(Exception e) {
+                        label.setText(line);
+                        try {
+                            if(line.contains(":")){
+                                String username = line.substring(0, line.indexOf(":"));
+                                label.setForeground(getUniqueColor(username));
+                            }
 
-                        String username = line.substring(0, line.indexOf(":"));
-                        label.setForeground(getUniqueColor(username));
-                    } catch( IndexOutOfBoundsException ooe) {
-                        System.out.println(ooe);
+                        } catch( IndexOutOfBoundsException ooe) {
+                            System.out.println(ooe);
+                        }
                     }
+
                 }
-                
             }
+
         }
             
         box.setMaximumSize(box.getPreferredSize());
