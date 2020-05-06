@@ -164,6 +164,9 @@ public class ChatUI {
                 label.setForeground(getUniqueColor(mssg.substring(8, mssg.length()-1)));
             } catch(IndexOutOfBoundsException e) {
                 System.err.println(e);
+                System.out.println("caused by:");
+                System.out.println(mssg);
+                System.out.println(type.toString());
             }
             label.setHorizontalAlignment(SwingConstants.LEFT);
 
@@ -187,8 +190,10 @@ public class ChatUI {
                         String username = line.substring(0, line.indexOf(":"));
                         label.setForeground(getUniqueColor(username));
                     } catch( IndexOutOfBoundsException ooe) {
-                        System.out.println(ooe);
-                    }
+                        System.err.println(ooe);
+                        System.out.println("caused by:");
+                        System.out.println(mssg);
+                        System.out.println(type.toString());                    }
                 }
                 
             }
