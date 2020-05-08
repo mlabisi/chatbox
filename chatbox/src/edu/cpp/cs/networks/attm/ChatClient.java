@@ -130,12 +130,12 @@ public class ChatClient {
                             window.showMessages(false);
                             window.showUsernameScreen(true);
                             window.changeLabel(line);
-                        } else if (line.startsWith("Welcome")) {
+                        } else if (line.startsWith("Welcome")) { // this might not work?
                             window.showMessages(true);
                             window.showUsernameScreen(false);
-                            window.writeMessage(line, MessageTypes.WELCOME);
+                            window.writeMessage(line);
                         } else {
-                            window.writeMessage(line, MessageTypes.MESSAGE);
+                            window.writeMessage(line);
                         }
                     } catch (IOException e) {
                         LOG.severe("‼️ Client couldn't read line from server\n");
