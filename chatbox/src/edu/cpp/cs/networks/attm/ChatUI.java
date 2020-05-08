@@ -144,7 +144,6 @@ public class ChatUI {
 
     public void writeMessage(String mssg) {
         try {
-
             Document doc = chat.getDocument();
             for (String line : mssg.split("\n")) {
                 // test if this line is a valid timestamp, and format
