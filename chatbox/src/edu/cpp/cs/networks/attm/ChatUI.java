@@ -195,33 +195,4 @@ public class ChatUI {
         float hue = (float) (name.hashCode() % 360) / 360.0f;
         return new Color(Color.HSBtoRGB(hue, .75f, .55f));
     }
-
-    private static class RoundedBorder implements Border {
-
-        private int radius;
-        private Color color;
-
-        RoundedBorder(int radius, Color color) {
-            this.radius = radius;
-            this.color = color;
-        }
-
-        @Override
-        public Insets getBorderInsets(Component c) {
-            return new Insets(this.radius, this.radius, this.radius, this.radius);
-        }
-
-        @Override
-        public boolean isBorderOpaque() {
-            return true;
-        }
-
-        @Override
-        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-            g.setColor(this.color);
-            g.fillRoundRect(x, y, width, height, radius * 2, radius * 2);
-            // g.clearRect(+radius, y+radius, width - (radius*2), height - (radius*2));
-        }
-    }
-
 }
