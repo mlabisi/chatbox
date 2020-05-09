@@ -1,11 +1,12 @@
 package edu.cpp.cs.networks.attm;
 
 
-import java.io.*;
-import java.net.*;
-import java.sql.Timestamp;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
 import java.util.logging.Logger;
 
 /**
@@ -153,8 +154,8 @@ public class ChatClient {
      * @param args Holds command line arguments
      */
     public static void main(String[] args) {
-//        String hostName = "34.209.49.228"; // aws server
-        String hostName = "localhost"; // local server
+        String hostName = "34.209.49.228"; // aws server
+//        String hostName = "localhost"; // local server
 
         ChatClient c1 = new ChatClient(hostName, 4321);
         c1.start();

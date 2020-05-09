@@ -184,10 +184,6 @@ public class ChatUI {
         }
     }
 
-    public void close() {
-
-    }
-
     public Color getUniqueColor(String name) {
         float hue = (float) (name.hashCode() % 360) / 360.0f;
         return new Color(Color.HSBtoRGB(hue, .75f, .55f));
