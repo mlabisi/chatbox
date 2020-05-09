@@ -161,16 +161,13 @@ public class ChatUI {
 
                     // if this was a user message, colorize
                     try {
+
                         String username = line.substring(0, line.indexOf(":"));
                         StyleConstants.setForeground(set, getUniqueColor(username));
                     
                     // else it was a system message (connect / disconnect)
-                    } catch (IndexOutOfBoundsException ooe) {
-                        System.err.println(ooe);
-                        System.out.println("caused by:");
-                        System.out.println(mssg);
+                    } catch (StringIndexOutOfBoundsException ooe) {
                     }
-
                     doc.insertString(doc.getLength(), line + "\n", set);
 
                 }
