@@ -160,6 +160,10 @@ public class ChatServer {
          */
         synchronized private void register() {
             try {
+                StringBuilder sb = new StringBuilder();
+                for(String u: users.keySet() ){
+                    sb.append(u+" ");
+                }
                 int attemptCt = 0;
                 do {
                     attemptCt++;
@@ -171,7 +175,11 @@ public class ChatServer {
 
                 users.put(username, outToClient);
                 directMessage(username, "Welcome " + username + "!", false);
+                if(users.size()>1){
+                    directMessage(username, "Other connected users: " + sb.toString(), false);
+                }
                 shadowBroadcast(username + (currentStatus = ClientStatus.LOGGED_IN).toString(), username);
+
                 LOG.info("✅ " + username + " registered successfully");
             } catch (IOException e) {
                 LOG.severe("‼️ Could not communicate with client\n" + e.toString());
@@ -201,7 +209,7 @@ public class ChatServer {
             try {
                 String message;
                 while (!(message = inFromClient.readUTF()).equals(".")) {
-                    broadcast(username + ": " + message);
+                    broadcast(username + ":" + message);
                     LOG.info("✅ " + username + "'s message broadcast successful");
                     LOG.info("📢 " + message);
                 }
